@@ -1,133 +1,97 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profilim</title>
+<title>Şans Oyunu 🎰</title>
 
 <style>
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
     color: white;
-}
-
-/* ANİMASYON */
-.fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeUp 1s ease forwards;
-}
-
-.delay-1 { animation-delay: 0.3s; }
-.delay-2 { animation-delay: 0.6s; }
-.delay-3 { animation-delay: 0.9s; }
-
-@keyframes fadeUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-header {
     text-align: center;
-    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-header h1 {
-    font-size: 48px;
-    margin: 0;
-}
-
-header p {
-    opacity: 0.8;
-}
-
-section {
-    padding: 50px 20px;
-    max-width: 800px;
-    margin: auto;
-}
-
-h2 {
-    border-bottom: 2px solid rgba(255,255,255,0.3);
-    padding-bottom: 10px;
-}
-
-.skills span {
-    display: inline-block;
-    background: white;
-    color: #2a5298;
-    padding: 8px 15px;
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 40px;
     border-radius: 20px;
-    margin: 5px;
-    font-weight: bold;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
-.social a {
-    display: inline-block;
-    margin: 10px;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    border: 2px solid white;
-    padding: 8px 15px;
+h1 {
+    margin-top: 0;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
     border-radius: 10px;
+    cursor: pointer;
+    background: gold;
+    color: black;
+    font-weight: bold;
     transition: 0.3s;
 }
 
-.social a:hover {
-    background: white;
-    color: #2a5298;
+button:hover {
+    transform: scale(1.1);
 }
 
-footer {
-    text-align: center;
-    padding: 20px;
-    opacity: 0.7;
+.score {
+    font-size: 28px;
+    margin: 20px 0;
+}
+
+.highscore {
+    opacity: 0.8;
 }
 </style>
 </head>
 
 <body>
 
-<header class="fade-in">
-    <h1>Yasin Semih Piliççi</h1>
-    <p>Web Developer | Öğrenci | Yazılım Meraklısı</p>
-</header>
+<div class="card">
+    <h1>🎰 Şans Oyunu</h1>
+    <p>Butona bas ve şansını dene!</p>
 
-<section class="fade-in delay-1">
-    <h2>Hakkımda</h2>
-    <p>
-        Yazılım öğreniyorum ve projeler geliştiriyorum.
-        Web siteleri ve farklı uygulamalar üzerinde çalışıyorum.
-    </p>
-</section>
+    <div class="score" id="score">Puan: 0</div>
+    <div class="highscore" id="highscore">Rekor: 0</div>
 
-<section class="fade-in delay-2">
-    <h2>Yetenekler</h2>
-    <div class="skills">
-        <span>HTML</span>
-        <span>CSS</span>
-        <span>JavaScript</span>
-        <span>Discord Bot</span>
-    </div>
-</section>
+    <button onclick="oyna()">Şansımı Dene</button>
+</div>
 
-<section class="fade-in delay-3">
-    <h2>Sosyal Medya</h2>
-    <div class="social">
-        <a href="#">https://www.instagram.com/ysemihplc/?hl=tr</a>
-        <a href="#">GitHub</a>
-        <a href="#">LinkedIn</a>
-    </div>
-</section>
+<script>
+let highscore = localStorage.getItem("highscore") || 0;
+document.getElementById("highscore").innerText = "Rekor: " + highscore;
 
-<footer>
-    © 2026 Tüm Hakları Saklıdır
-</footer>
+function oyna() {
+    let puan = Math.floor(Math.random() * 101);
+
+    document.getElementById("score").innerText = "Puan: " + puan;
+
+    if (puan > highscore) {
+        highscore = puan;
+        localStorage.setItem("highscore", highscore);
+        document.getElementById("highscore").innerText = "Rekor: " + highscore;
+    }
+
+    if (puan > 90) {
+        alert("🔥 JACKPOT! Çok şanslısın!");
+    } else if (puan < 10) {
+        alert("😅 Bugün şanslı değilsin.");
+    }
+}
+</script>
 
 </body>
 </html>
