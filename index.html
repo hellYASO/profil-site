@@ -13,6 +13,24 @@ body {
     color: white;
 }
 
+/* ANİMASYON */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.3s; }
+.delay-2 { animation-delay: 0.6s; }
+.delay-3 { animation-delay: 0.9s; }
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 header {
     text-align: center;
     padding: 60px 20px;
@@ -75,20 +93,20 @@ footer {
 
 <body>
 
-<header>
-    <h1>Yasin semih Piliççi</h1>
+<header class="fade-in">
+    <h1>Yasin Semih Piliççi</h1>
     <p>Web Developer | Öğrenci | Yazılım Meraklısı</p>
 </header>
 
-<section>
+<section class="fade-in delay-1">
     <h2>Hakkımda</h2>
     <p>
-        Ben yazılım öğreniyorum ve kendi projelerimi geliştiriyorum.
-        Web siteleri, botlar ve farklı yazılım projeleri üzerinde çalışıyorum.
+        Yazılım öğreniyorum ve projeler geliştiriyorum.
+        Web siteleri ve farklı uygulamalar üzerinde çalışıyorum.
     </p>
 </section>
 
-<section>
+<section class="fade-in delay-2">
     <h2>Yetenekler</h2>
     <div class="skills">
         <span>HTML</span>
@@ -98,11 +116,11 @@ footer {
     </div>
 </section>
 
-<section>
+<section class="fade-in delay-3">
     <h2>Sosyal Medya</h2>
     <div class="social">
         <a href="#">https://www.instagram.com/ysemihplc/?hl=tr</a>
-        <a href="#">https://github.com/hellYASO</a>
+        <a href="#">GitHub</a>
         <a href="#">LinkedIn</a>
     </div>
 </section>
