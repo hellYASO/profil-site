@@ -4,93 +4,244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Şans Oyunu 🎰</title>
+<title>Mini Casino Pro 🎰</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #141e30, #243b55);
-    color: white;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    text-align:center;
 }
 
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 40px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
 }
 
-h1 {
-    margin-top: 0;
+.card{
+    background:rgba(255,255,255,0.08);
+    padding:20px;
+    border-radius:15px;
+    margin:20px 0;
 }
 
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    background: gold;
-    color: black;
-    font-weight: bold;
-    transition: 0.3s;
+button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    background:gold;
+    color:black;
+    transition:0.3s;
+}
+button:hover{transform:scale(1.1);}
+
+.slot{
+    font-size:40px;
+    letter-spacing:10px;
 }
 
-button:hover {
-    transform: scale(1.1);
+ul{
+    padding:0;
 }
-
-.score {
-    font-size: 28px;
-    margin: 20px 0;
-}
-
-.highscore {
-    opacity: 0.8;
+li{
+    list-style:none;
+    padding:5px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
+<h1>🎰 Mini Casino Pro</h1>
+<h2 id="money"></h2>
+<h3 id="level"></h3>
+
+<!-- SLOT -->
 <div class="card">
-    <h1>🎰 Şans Oyunu</h1>
-    <p>Butona bas ve şansını dene!</p>
+<h3>🎰 Slot Makinesi</h3>
+<div class="slot" id="slot">🍒 🍋 🍊</div>
+<button onclick="playSlot()">Oyna (10₺)</button>
+</div>
 
-    <div class="score" id="score">Puan: 0</div>
-    <div class="highscore" id="highscore">Rekor: 0</div>
+<!-- RULET -->
+<div class="card">
+<h3>🎲 Rulet</h3>
+<div id="rouletteResult">Sonuç: -</div>
+<button onclick="playRoulette()">Çevir (10₺)</button>
+</div>
 
-    <button onclick="oyna()">Şansımı Dene</button>
+<!-- KART -->
+<div class="card">
+<h3>🃏 Kart Çek</h3>
+<div id="cardResult">Kart: -</div>
+<button onclick="drawCard()">Çek (5₺)</button>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="card">
+<h3>🏆 Liderlik</h3>
+<ul id="leaderboard"></ul>
+</div>
+
 </div>
 
 <script>
-let highscore = localStorage.getItem("highscore") || 0;
-document.getElementById("highscore").innerText = "Rekor: " + highscore;
 
-function oyna() {
-    let puan = Math.floor(Math.random() * 101);
+/* =====================
+   OYUNCU SİSTEMİ
+===================== */
 
-    document.getElementById("score").innerText = "Puan: " + puan;
-
-    if (puan > highscore) {
-        highscore = puan;
-        localStorage.setItem("highscore", highscore);
-        document.getElementById("highscore").innerText = "Rekor: " + highscore;
-    }
-
-    if (puan > 90) {
-        alert("🔥 JACKPOT! Çok şanslısın!");
-    } else if (puan < 10) {
-        alert("😅 Bugün şanslı değilsin.");
-    }
+let username = localStorage.getItem("username");
+if(!username){
+    username = prompt("Kullanıcı adını gir:");
+    localStorage.setItem("username", username);
 }
+
+let money = parseInt(localStorage.getItem("money")) || 100;
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let level = parseInt(localStorage.getItem("level")) || 1;
+
+/* =====================
+   GÜNCELLEME
+===================== */
+
+function updateUI(){
+    document.getElementById("money").innerText = "💰 Para: " + money;
+    document.getElementById("level").innerText = "⭐ Level: " + level + " | XP: " + xp + "/"+(level*100);
+    localStorage.setItem("money", money);
+    localStorage.setItem("xp", xp);
+    localStorage.setItem("level", level);
+}
+
+function addXP(amount){
+    xp += amount;
+    if(xp >= level*100){
+        xp = 0;
+        level++;
+        alert("🎉 Level Atladın! Yeni Level: "+level);
+    }
+    updateUI();
+}
+
+updateUI();
+
+/* =====================
+   SLOT
+===================== */
+
+function playSlot(){
+    if(money < 10) return alert("Yetersiz para!");
+    money -= 10;
+
+    const symbols=["🍒","🍋","🍊","⭐","💎"];
+    let slotDiv = document.getElementById("slot");
+
+    let spin=0;
+    let interval=setInterval(()=>{
+        slotDiv.innerText =
+            symbols[Math.floor(Math.random()*5)]+" "+
+            symbols[Math.floor(Math.random()*5)]+" "+
+            symbols[Math.floor(Math.random()*5)];
+        spin++;
+        if(spin>15){
+            clearInterval(interval);
+
+            let s1=symbols[Math.floor(Math.random()*5)];
+            let s2=symbols[Math.floor(Math.random()*5)];
+            let s3=symbols[Math.floor(Math.random()*5)];
+            slotDiv.innerText=s1+" "+s2+" "+s3;
+
+            if(s1===s2 && s2===s3){
+                alert("🔥 JACKPOT! +150₺");
+                money+=150;
+                addXP(50);
+            } else {
+                addXP(10);
+            }
+            updateUI();
+        }
+    },100);
+}
+
+/* =====================
+   RULET
+===================== */
+
+function playRoulette(){
+    if(money < 10) return alert("Yetersiz para!");
+    money -= 10;
+
+    let spin=0;
+    let interval=setInterval(()=>{
+        document.getElementById("rouletteResult").innerText =
+            "Sonuç: "+Math.floor(Math.random()*10);
+        spin++;
+        if(spin>15){
+            clearInterval(interval);
+            let result=Math.floor(Math.random()*10);
+            document.getElementById("rouletteResult").innerText="Sonuç: "+result;
+
+            if(result===7){
+                alert("🎉 Şanslı 7! +100₺");
+                money+=100;
+                addXP(40);
+            } else {
+                addXP(10);
+            }
+            updateUI();
+        }
+    },100);
+}
+
+/* =====================
+   KART
+===================== */
+
+function drawCard(){
+    if(money < 5) return alert("Yetersiz para!");
+    money -= 5;
+
+    const cards=["A","K","Q","J","10","9","8"];
+    let card = cards[Math.floor(Math.random()*cards.length)];
+    document.getElementById("cardResult").innerText="Kart: "+card;
+
+    if(card==="A"){
+        alert("🃏 As geldi! +70₺");
+        money+=70;
+        addXP(30);
+    } else {
+        addXP(5);
+    }
+    updateUI();
+}
+
+/* =====================
+   LEADERBOARD
+===================== */
+
+function updateLeaderboard(){
+    let board = JSON.parse(localStorage.getItem("globalBoard")) || [];
+    board.push({name:username, money:money});
+    board.sort((a,b)=>b.money-a.money);
+    board = board.slice(0,5);
+
+    localStorage.setItem("globalBoard", JSON.stringify(board));
+
+    document.getElementById("leaderboard").innerHTML =
+        board.map(p=>"<li>"+p.name+" - "+p.money+"₺</li>").join("");
+}
+
+setInterval(updateLeaderboard,10000);
+updateLeaderboard();
+
 </script>
 
 </body>
